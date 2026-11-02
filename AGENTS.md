@@ -15,7 +15,7 @@ ILTTU itself, its issues and its decisions are in `asteroid-computing/ilttu`, wh
 - **Validate after every change:** `claude plugin validate .` and `claude plugin validate plugins/ilttu`.
 - **Change a plugin's `version` in `plugin.json` with every change to it**, because people stay on their copy until the version changes.
 - **The connection's values are exact.**
-  The URL is `https://mcp.ilttu.com/`, as Connect on ILTTU's workspace page gives it.
+  The URL is `https://mcp.ilttu.com/`, slash included, as Connect on ILTTU's workspace page gives it and as ILTTU's user pool identifies the resource agents sign in for.
   The `oauth` block must stay, because ILTTU's authorization server offers no dynamic client registration, so without a client ID Claude Code can't sign in.
   The callback port is 33418, because Cognito matches a redirect's port exactly.
   The client ID is the SSM parameter `/ilttu-main/cognito/claude-code-client-id` on ILTTU's `main` instance.
