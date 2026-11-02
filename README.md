@@ -19,7 +19,8 @@ claude plugin marketplace add asteroid-computing/ilttu-plugins
 claude plugin install ilttu@ilttu-plugins
 ```
 
-Then sign in, with an invitation to ILTTU: run `/mcp` and choose ILTTU's server, or in the desktop app run this in a shell.
+You need an invitation to ILTTU, and to have signed in once at `https://ilttu.com`.
+Then sign in here: run `/mcp` and choose ILTTU's server, or in the desktop app run this in a shell.
 
 ```shell
 claude mcp login plugin:ilttu:ilttu
@@ -27,7 +28,7 @@ claude mcp login plugin:ilttu:ilttu
 
 Ask Claude to call ILTTU's `whoami`, and it answers with who you signed in as.
 
-To get a newer version, run `/plugin marketplace update ilttu-plugins`.
+To get a newer version, run `claude plugin marketplace update ilttu-plugins` and `claude plugin update ilttu@ilttu-plugins` in a shell, then start a new session or run `/reload-plugins`.
 
 ## Plugins
 
