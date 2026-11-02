@@ -4,7 +4,7 @@
       "type": "http",
       "url": "https://mcp.ilttu.com/",
       "oauth": {
-        "clientId": "CLIENT-ID-AFTER-STEP-6",
+        "clientId": "5uf3n40456j71qu30d31sfmdqc",
         "callbackPort": 33418
       }
     }
