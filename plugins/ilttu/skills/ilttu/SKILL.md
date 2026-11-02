@@ -17,6 +17,7 @@ Call ILTTU's `whoami` tool, and tell the person who it says they are.
 - `kind` `key`: the connection acts for a workspace key, and `workspace`, `name` and `role` say which.
 
 If the tool isn't there, the server needs signing in.
+A session that was open during the sign-in may need `/reload-plugins`, or a new session, before the tool appears.
 
 ## Sign in
 
