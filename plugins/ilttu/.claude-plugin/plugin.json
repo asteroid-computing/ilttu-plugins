@@ -1,0 +1,14 @@
+{
+  "name": "ilttu",
+  "displayName": "ILTTU",
+  "description": "Connects Claude Code to ILTTU's MCP server, signing you in through ILTTU.",
+  "version": "0.1.0",
+  "license": "Apache-2.0",
+  "author": {
+    "name": "AJ Beck",
+    "email": "aj@asteroidcomputing.com"
+  },
+  "homepage": "https://ilttu.com",
+  "repository": "https://github.com/asteroid-computing/ilttu-plugins",
+  "keywords": ["ilttu", "mcp", "answers"]
+}

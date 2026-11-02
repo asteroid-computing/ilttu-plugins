@@ -1,0 +1,12 @@
+{
+  "mcpServers": {
+    "ilttu": {
+      "type": "http",
+      "url": "https://mcp.ilttu.com/",
+      "oauth": {
+        "clientId": "CLIENT-ID-AFTER-STEP-6",
+        "callbackPort": 33418
+      }
+    }
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "name": "ilttu-plugins",
+  "owner": {
+    "name": "AJ Beck",
+    "email": "aj@asteroidcomputing.com"
+  },
+  "description": "ILTTU's plugins for Claude Code.",
+  "plugins": [
+    {
+      "name": "ilttu",
+      "source": "./plugins/ilttu",
+      "description": "Connects Claude Code to ILTTU's MCP server, signing you in through ILTTU."
+    }
+  ]
+}
