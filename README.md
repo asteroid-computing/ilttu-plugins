@@ -36,6 +36,7 @@ To get a newer version, run `claude plugin marketplace update ilttu-plugins` and
 
 - It connects Claude Code to ILTTU's MCP server, `https://mcp.ilttu.com/`, signing you in through ILTTU's own page.
 - The `ilttu` skill says what ILTTU is, how to check the connection, and what to do when signing in fails.
+- The `design` skill, `/ilttu:design`, designs a page or a set of options, shares it as a private answer to preview, and revises it at the same link.
 
 This plugin is for `ilttu.com`.
 For another instance of ILTTU, use the command in Connect on a workspace's page.
