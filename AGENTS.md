@@ -9,6 +9,7 @@ ILTTU itself, its issues and its decisions are in `asteroid-computing/ilttu`, wh
 - `plugins/<name>/.claude-plugin/plugin.json` - a plugin's manifest.
 - `plugins/ilttu/.mcp.json` - the connection to ILTTU's MCP server.
 - `plugins/ilttu/skills/ilttu/SKILL.md` - what ILTTU is, how to check the connection, and what to do when signing in fails.
+- `plugins/ilttu/skills/design/` - `/ilttu:design`: designing a page, previewing it as an ILTTU answer and revising it at the same link, with `SKILL.md` and its `references/`.
 
 ## Rules
 
@@ -21,7 +22,7 @@ ILTTU itself, its issues and its decisions are in `asteroid-computing/ilttu`, wh
   The client ID is the SSM parameter `/ilttu-main/cognito/claude-code-client-id` on ILTTU's `main` instance.
 - **The repository holds no secret:** a public client's ID, and nothing else from SSM.
 - **The install commands in `README.md` are quoted word for word in Connect on ILTTU's workspace page**, so a change to them is a change in `asteroid-computing/ilttu` too.
-- **The skill grows with the MCP server's tools**, and says only what the server does now.
+- **Each skill grows with the MCP server's tools**, and says only what the server does now.
 
 ## Writing and pull requests
 
