@@ -25,7 +25,7 @@ It works through ILTTU's MCP server, which this plugin connects; if its tools ar
 - Scripts from a CDN pinned to an exact version, such as `htmx.org@2.0.4`, never a range or `latest`.
 - A `<title>`, which becomes the answer's title.
 
-ILTTU serves an answer as it came, on its workspace's own host, with no Content-Security-Policy, so fonts and scripts from other hosts load.
+ILTTU serves an answer as it came, with no Content-Security-Policy, so fonts and scripts from other hosts load.
 
 ## Rules that bite
 

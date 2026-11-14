@@ -15,7 +15,8 @@ A new answer takes its workspace's default, which `get_workspace` gives as `new_
 Tell the person which it is when you hand back the link.
 
 - Never make an answer open to anyone with the link unless the person asks; `set_who_can_open` changes it, and changes the link too.
-- To show the design to someone else in a restricted workspace, an owner can add them as a viewer with `share_answer`, which lets them open every answer in that workspace, and only works for someone already invited to ILTTU. ILTTU sends no mail, so send them the link yourself, and tell them to sign in with that address.
+- To show the design to someone else in a restricted workspace, an owner can add them as a viewer with `share_answer`, which lets them open every answer in that workspace, and only works for someone already invited to ILTTU.
+  ILTTU sends no mail, so send them the link yourself, and tell them to sign in with that address.
 - If you're not an owner, ask one to add them.
 
 ## Pack the page

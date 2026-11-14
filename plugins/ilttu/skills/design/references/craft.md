@@ -3,7 +3,7 @@
 > This file is adapted from the frontend-design skill in Anthropic's `anthropics/skills` repository, `skills/frontend-design/SKILL.md` at commit 41bbe19, licensed under the Apache License, Version 2.0 (https://www.apache.org/licenses/LICENSE-2.0).
 > It was changed for ILTTU: reworded in ILTTU's voice and reordered, with the design-studio persona left out, and with guidance added on agreeing the look, colour, real material, options, the quality floor, landing pages, phone screens, recreating a design and changing one.
 
-Read this when you plan a look, build a page or a set of options, or when the person pushes back on a design call.
+Read this when you plan a look, build a page or a set of options, or when the person disagrees with a choice you made.
 `SKILL.md` has the short version.
 
 ## Start from the subject
@@ -15,13 +15,13 @@ Build with the brief's real content and subject throughout.
 
 ## Agree the look
 
-Without a look, references or a design system from the person, get their view before committing to one.
-Ask, or show two to four clearly different rough directions they can see, rather than picking a look on their behalf.
-A concrete subject, an asset or a brand already counts as their view.
-With nobody to ask, commit to one direction you can name, and say which.
+The look is the person's call, so find out what they want before you settle it.
+A brand, an asset, references or even a clear subject is enough to go on.
+If they gave you none of those, ask, or put a few rough pages in front of them that differ in an obvious way and let them point.
+If nobody is there to answer, pick one look, give it a name, and tell them which you picked.
 Once a look is agreed, it stays agreed.
 
-Where the person has a design system or a brand, use it: its colours, type, spacing, radii and fonts, exactly.
+Where the person has a design system or a brand, use it: its colours, typefaces, spacing and corner radii, exactly.
 Where it is too tight for what you need, derive from it rather than inventing beside it.
 
 ## Plan, check, then build
@@ -101,73 +101,79 @@ Motion that answers what someone did, opening, expanding, confirming, is welcome
 
 ## Real material
 
-A detailed mockup starts from the person's own material: their code, their brand, screenshots of their product, their design system.
-Find that first, and ask for it if you can't.
-Mocking a whole product from nothing is the last resort, and it shows.
-Say your assumptions and reasoning early, and share something as soon as there is something to react to.
-
-Where you don't have an icon, an image or a component, draw a clear placeholder: a placeholder beats a poor imitation of the real thing.
+Good detail comes from what already exists.
+Before you draw someone's product, look for its real pieces, and ask when you can't find them.
+A product invented from nothing looks invented.
+Tell the person early what you assumed and why, and show them a first version while it's still easy to change.
+When a real icon, picture or component is missing, leave a plain, labelled gap where it goes rather than faking one.
 
 ## Options
 
 When a big decision is still open, such as the overall direction, the hero, the type, the colour or the density, settle it before you build the full page.
 
-- Offer two to four clearly different options, each on an axis you can name, such as "warm editorial" against "dense, data first"; five shades of one look is no choice at all.
-- Rough is fine for choosing a direction: early on, sketch three to five approaches with simple shapes, placeholder text and little colour, focused on structure and flow.
-- Make each option's honest case, and its main tradeoff, in your reply, not on its page; a set where only your favourite gets a case is a rigged vote.
-- Keep option names stable: once something is "Option B" or "Warm editorial", it keeps that name in every later round.
-- Once the direction is settled and the person wants variations to keep, give three or more across several dimensions, from by-the-book versions to new layouts, interactions and visual ideas, so they can mix and match.
+- Show two to four, and make each differ in a way you can say out loud, like "a calm reading page" against "everything on one screen"; if two only differ in shade, drop one.
+- Keep them rough while the person is choosing: boxes, grey text and one colour are enough to compare how a page is put together.
+- In your reply, argue fairly for every option and say what each one costs, and keep the pitch off the pages themselves.
+- Name each option and keep the name, so what's called "Option B" today is still "Option B" next round.
+- When the direction is set and the person wants alternatives to keep, vary more than one thing, some close to what exists and some trying a new layout, interaction or visual idea, so they can take a piece from each.
 
 ## The floor
 
 Build to a quality floor without announcing it:
 
-- It works at phone width, with no headline breaking badly, no squashed grid and no text too small to read.
+- It works at phone width, with no headline breaking badly, no squashed grid and every word big enough to read.
 - Keyboard focus is visible.
 - Reduced motion is respected.
 - Touch targets are at least 44px, and text is sized for how far away it's read.
-- Controls are the real elements even in a static mockup: `<button>`, `<a href>`, and `<input>` with a `<label>`, never a `div` with a click handler, which Tab skips and a screen reader can't announce.
-- An icon-only button has an `aria-label`.
-- Text has a contrast of at least 4.5:1 against what's behind it, or 3:1 from 24px; small grey captions and white text on coloured fills fail most often, so darken them.
-- Colours that must be told apart differ in lightness, not hue alone; blue and orange separate better than red and green.
+- Buttons, links and form fields are the real HTML elements, each field with its label, even when nothing on the page works yet, so a keyboard and a screen reader can find them.
+- A button that shows only an icon still has a name, in `aria-label`.
+- Text is easy to read against its background, at the 4.5:1 contrast WCAG asks for, or 3:1 for large text; pale captions and white on a bright fill are where it usually slips.
+- Where colour carries meaning, the colours differ in how light they are as well as in hue, so someone who can't tell hues apart still can.
 - The palette is harmonious.
 
 ## Landing pages
 
-A landing page has a known anatomy:
+A landing page exists to get a visitor to do one thing.
 
-- a hero that states the offer in one sentence, with one clear call to action;
-- proof a visitor can trust, such as quotes, logos or numbers, from the person's own material or as clearly marked placeholders;
-- sections that answer a visitor's real doubts rather than listing features;
-- one main action, repeated down the page, not three buttons competing.
+- The first screen says what's on offer and what to do about it.
+- Somewhere near it, the page shows why a visitor should believe it, with the person's own quotes, customers or figures, or a marked gap for them to fill.
+- Each section after that answers a question a visitor would really ask, rather than walking through a feature list.
+- The one action comes back further down the page, and nothing competes with it.
 
-On a landing page the copy is the product.
-Write specific copy from what the person told you, about their product, their customers and in their voice: never lorem ipsum, "Welcome to our website" or filler that could describe any business.
-Where a fact is missing, such as a price, a date or an address, put a marked placeholder like `[YOUR PRICE]` for them to fill, never a made-up one.
-It's a page, not a poster: fluid to the window's width, down to a phone.
+Here the words matter as much as the look.
+Write them from what the person told you about their product and the people who buy it, in a voice that sounds like them, because a line that would fit any business tells a visitor nothing.
+If you don't know a price, a date or an address, leave a clear marker such as `[price]`, and never guess one.
+Build it to stretch and shrink with the window, from a wide screen down to a phone, rather than at one fixed size.
 
 ## Phone screens
 
-Don't draw a fake status bar, the strip with the time, battery and signal, or a fake keyboard.
-On a real phone the real ones sit on top of your layout, and a painted copy looks doubled.
-Leave that space alone, inside a drawn phone frame too.
+Leave out the phone's own parts, the clock and battery along the top and the on-screen keyboard.
+The phone draws its own over your page, so a drawn copy ends up on screen twice.
+That holds inside a phone you draw as a frame, too.
 
 ## Recreating a design
 
-When asked to recreate a design whose source you can reach, such as a repository, pasted files or a design system, build from that source, not from what you remember of the product.
-Read its components and styles, use the assets it actually loads, and copy its exact values, paddings, radii, font sizes and line heights, rather than rounding them to a grid or a framework's defaults.
-Source beats screenshots: with the source in hand, treat screenshots as a rough guide.
-If you can't read the source, say so rather than inventing from memory.
+To rebuild something that exists, work from its source if you can reach it, whether that's a repository, files they pasted or a design system.
+Use what's really there, its components, its styles and the assets it loads, and keep its measurements as they are, without tidying them to a grid.
+Memory is a poor guide to how a product looks, and once you have the source, a screenshot is only a rough one.
+If you can't get at the source, tell the person instead of building from memory.
 
-Don't recreate another company's distinctive design, its proprietary patterns or its branded visuals, unless the person says they work there; ask when it's unclear.
-Instead, find out what they want to build, and make an original design that does it.
+Another company's signature look isn't yours to copy, unless the person tells you they work there, so ask if you're not sure.
+Find out what they're trying to make, and design something of their own that does it.
 
 ## Changing a design
 
-- **A small change stays small.** When asked to change some text, a colour or one element, change only that, and leave every other layout, spacing, font, size, colour and word as it was. A redesign or a new direction is different, and then the big changes are the job. If a broader change would help, make the small one and suggest the rest.
-- **Follow the design's own style.** Before adding to an existing page, learn how it does things, its copy, palette, tone, states, motion, cards, shadows and density, and do the same.
-- **No filler.** Never pad a page with placeholder text, extra sections or numbers just to fill space; every element earns its place. An empty-feeling section is a layout problem, not a content one. Leave out stats, icons and data nobody needs.
-- **Ask before adding.** If more sections, pages or copy would help, ask first: the person knows their audience and goals better than you do.
+- **Do what was asked, and only that.**
+  When someone wants new text, a new colour or one element changed, everything else stays exactly as it was.
+  A redesign is the opposite case, and then large changes are the point.
+  If you see a bigger improvement, make the small change and mention the bigger one.
+- **Match what's there.**
+  Before you add to a page, notice how it already writes, colours, spaces, moves and shades things, and add in the same way.
+- **Leave space empty rather than filling it.**
+  Don't add text, sections or figures to make a page look full, and if a section looks bare, fix the layout.
+  Every number, icon and chart is one somebody needs.
+- **Ask before you add.**
+  More pages, sections or copy are the person's call, since they know who it's for.
 
 ## Words
 

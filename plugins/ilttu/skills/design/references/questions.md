@@ -4,39 +4,38 @@ Read this before you ask the person anything about a design.
 
 ## Whether to ask
 
-Ask only when someone is there to answer.
-In a run with nobody to ask, such as a scheduled task or another agent calling you, or when the person says "just make it", don't ask: decide, build, and say your assumptions in one line.
+Questions need someone to answer them.
+When nobody's there, as in a scheduled task or a call from another agent, or when the person tells you to get on with it, skip them: make the calls yourself, build, and list what you assumed in a line.
 
-Read everything they gave you first.
-Ask when what they gave still leaves two or more decisions open that would change what you build.
-A point you can sensibly default, a full brief or a small revision needs no questions.
+Otherwise, read all they sent before you decide.
+A question earns its place when their material still leaves more than one choice open that would change the page.
+If the brief is complete, the change is small, or there's one gap with an obvious answer, go ahead without asking.
 
 ## How to ask
 
-Ask once, before you write anything, with at most four questions.
-Where your tools have one, such as Claude Code's `AskUserQuestion`, use it, so they can answer with a click.
+Ask everything at once, before you build, and keep it to four questions or fewer.
+If your tools offer a question card, such as `AskUserQuestion` in Claude Code, use it, so answering takes a click.
 
-Write each question from their material, not from a form.
-Name what you read, the gap or tension in it, and the decision it leaves open, with the decision that would most change the design first.
-Never ask what the conversation already answers.
-Default what the setting implies, and say so.
-Stock questions, about audience, length or how polished it should be, are only for a brief with almost nothing in it.
+A good question shows you read what they sent.
+Point at something specific in it, say what it leaves unsettled, and ask about that, with the choice that matters most first.
+Leave out anything they've already told you or the context makes plain, and say what you took it to be instead.
+Generic questions, about who it's for or how finished it should look, only help when they've given you almost nothing.
 
-The options do the real work:
+The answers you offer are where the help is:
 
-- Two to four concrete choices for this design, such as "lead with the booking form", not "functional".
-- Each differs on something you can name, never shades of one idea.
-- Labels of a few words that carry the choice, with a short description where it helps.
-- Your pick first, marked "(Recommended)", except on a question of fact.
-- Let them pick more than one where the options don't exclude each other.
-- No "Other" or "you decide" option, as the tool adds its own, and no question that only free text can answer.
+- Give two to four real choices for this page, like "lead with the booking form", rather than a vague word like "functional".
+- Make each one differ from the others in a way you could put a name to.
+- Keep each label short enough to take in at a glance, with a few words of description only where it needs them.
+- Put the one you'd choose first, marked "(Recommended)", unless the question is about a fact.
+- Allow more than one answer when the choices can go together.
+- Leave out "Other" and "you decide", because the card adds its own way to type an answer, and don't ask anything only a typed answer can settle.
 
 ## After they answer
 
-Treat the answers as decisions, and restate them in your one line of assumptions.
-Whatever they left to you, decide, and say what you picked.
-Ask a second round, again at most four new questions, only if they ask for more or an answer opens a question you couldn't have asked before.
-Never ask the same thing twice.
+What they chose is settled, so build on it and repeat it in your line of assumptions.
+Anything they left open is yours to decide, so decide it and say what you chose.
+Ask a second round only when they want one, or when an answer raises something you couldn't have known to ask, and keep that round to four as well.
+Don't ask anything twice.
 
 ## An example
 
