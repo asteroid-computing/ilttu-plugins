@@ -37,7 +37,7 @@ The plugin puts it on the Bash tool's PATH, and it downloads its pinned release 
 - `ilttu-design init <dir>` copies the ilttu design system into `<dir>/ilttu/`: `tokens.css`, `components.css`, and its fonts with their licences.
   Use it only for a design in ILTTU's own look, link `ilttu/tokens.css` and then `ilttu/components.css` in each page's `<head>`, and run it again to update them; it replaces only its own files.
 
-In the desktop app, preview it in the built-in browser with `preview_start`, from this `.claude/launch.json` at the project's top, with the design's folder, relative to the project's top, in `runtimeArgs`:
+In the desktop app, preview it in the built-in browser with `preview_start`, from this configuration in `.claude/launch.json` at the project's top, added beside any the file already has, with the design's folder, relative to the project's top, in `runtimeArgs`:
 
 ```json
 {
