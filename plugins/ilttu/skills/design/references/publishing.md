@@ -32,7 +32,8 @@ Before you upload, check the page against what ILTTU refuses, so a round isn't l
 - a symbolic or hard link, or a path that climbs out of the archive;
 - more files, or more bytes once unpacked, than the instance allows, which the refusal names.
 
-And look at it in a local browser where there is one, at desktop and phone width.
+Preview the folder with `ilttu-design serve`, as the skill's "Preview it" says: a file it answers with a 404 is one ILTTU would refuse or never serve, and its 404 says why.
+Then pack that same folder, from inside it, so `index.html` is at the top, such as with `zip -r ../design.zip .` run in the folder.
 
 ## Publish the first round
 

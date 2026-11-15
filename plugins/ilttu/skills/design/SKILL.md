@@ -11,7 +11,7 @@ It works through ILTTU's MCP server, which this plugin connects; if its tools ar
 
 1. **Settle the brief.** Read what the person gave you, and ask only what would change the design, in one round: `references/questions.md`.
 2. **Choose the look.** Plan the palette, type and layout, and check the plan against the generic look before you build: `references/craft.md`.
-3. **Build the page.** Write `index.html` and what it needs, and look at it in a local browser where there is one, at phone width too.
+3. **Build and preview the page.** Write `index.html` and what it needs in a folder of its own, and preview it with `ilttu-design serve`: see "Preview it" below.
 4. **Publish it.** Upload it with `start_upload`, then read it with `get_answer` until it's ready: `references/publishing.md`.
 5. **Hand back the link.** Say what it shows, who can open it, and what you'd like them to tell you.
 6. **Revise it.** Change what they ask for, and replace the answer with `replace_answer`, so the link stays the same.
@@ -26,6 +26,31 @@ It works through ILTTU's MCP server, which this plugin connects; if its tools ar
 - A `<title>`, which becomes the answer's title.
 
 ILTTU serves an answer as it came, with no Content-Security-Policy, so fonts and scripts from other hosts load.
+
+## Preview it
+
+`ilttu-design` serves a design's folder on 127.0.0.1 as ILTTU will serve it as an answer: with the answer's headers, no Content-Security-Policy, and `no-store`, so a reload always shows the latest.
+It answers a 404 that says why for any file ILTTU would refuse or never serve, such as one with no extension, a symbolic link, or a path under `/_/`.
+The plugin puts it on the Bash tool's PATH, and it downloads its pinned release the first time it runs.
+
+- `ilttu-design serve <dir>` serves the folder at a free port and prints its URL: run it in the background.
+- `ilttu-design init <dir>` copies the ilttu design system into `<dir>/ilttu/`: `tokens.css`, `components.css`, and its fonts with their licences.
+  Use it only for a design in ILTTU's own look, link `ilttu/tokens.css` and then `ilttu/components.css` in each page's `<head>`, and run it again to update them; it replaces only its own files.
+
+In the desktop app, preview it in the built-in browser with `preview_start`, from this `.claude/launch.json` at the project's top, with the design's folder, relative to the project's top, in `runtimeArgs`:
+
+```json
+{
+  "version": "0.0.1",
+  "configurations": [
+    {"name": "design", "runtimeExecutable": "${CLAUDE_PLUGIN_ROOT}/bin/ilttu-design", "runtimeArgs": ["serve", "design"], "port": 8724, "autoPort": true}
+  ]
+}
+```
+
+The path in `runtimeExecutable` changes when the plugin updates, so write it as this skill gives it, and rewrite it when the file's differs.
+Elsewhere, open the URL `serve` prints in a headless browser.
+Look at the page at 1,440 and 375 wide, in light and dark, before you hand it back.
 
 ## Rules that bite
 
