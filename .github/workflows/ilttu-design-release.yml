@@ -1,0 +1,43 @@
+# Builds ilttu-design for each platform the plugin's wrapper runs on, and publishes them as a GitHub release, when a tag ilttu-design-v<version> is pushed.
+# A tag push runs the workflow file at the tagged commit, so a release can be cut from a branch before it merges.
+# After a release, pin its tag and each binary's SHA-256 in plugins/ilttu/bin/ilttu-design.
+name: Release ilttu-design
+
+on:
+  push:
+    tags:
+      - "ilttu-design-v*"
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ilttu-design
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7.0.0
+        with:
+          go-version-file: ilttu-design/go.mod
+          cache: false
+      - name: Vet and test
+        run: |
+          go vet ./...
+          go test ./...
+      - name: Build
+        env:
+          TAG: ${{ github.ref_name }}
+        run: |
+          mkdir dist
+          for target in darwin/arm64 darwin/amd64 linux/arm64 linux/amd64; do
+            CGO_ENABLED=0 GOOS="${target%/*}" GOARCH="${target#*/}" go build -trimpath -ldflags "-s -w -X main.version=${TAG}" -o "dist/ilttu-design-${target%/*}-${target#*/}" .
+          done
+          (cd dist && sha256sum ilttu-design-* > SHA256SUMS && cat SHA256SUMS)
+      - name: Publish
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TAG: ${{ github.ref_name }}
+        run: gh release create "$TAG" dist/* --repo "$GITHUB_REPOSITORY" --verify-tag --title "$TAG" --notes "ilttu-design ${TAG#ilttu-design-}, built from ${GITHUB_SHA}. The plugin's wrapper, plugins/ilttu/bin/ilttu-design, pins each binary's SHA-256."
