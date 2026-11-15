@@ -10,10 +10,10 @@ REPO="asteroid-computing/ilttu-plugins"
 # pinned prints the SHA-256 of the release's binary for the platform $1.
 pinned() {
   case "$1" in
-    darwin-arm64) echo "" ;;
-    darwin-amd64) echo "" ;;
-    linux-arm64) echo "" ;;
-    linux-amd64) echo "" ;;
+    darwin-arm64) echo "71d3f2fd6a404dc9d5af7f83dd559ac0d27df45984839a3aec4dce103a2376ea" ;;
+    darwin-amd64) echo "4baf726080120b260dcfa987191ca577e4464e552ff9e4f7f0b64576315563bf" ;;
+    linux-arm64) echo "cda9019010ebc27598d2c798fb1d8be12f6226cd4a7d4306d0eb35228b75885e" ;;
+    linux-amd64) echo "4b369c65e8473cd845bcab749be9e182188911fb9289cefa1a86904ba18cec7d" ;;
     *) return 1 ;;
   esac
 }
