@@ -1,0 +1,50 @@
+# Check: runs the checks AGENTS.md asks for after every change, on every PR and on main.
+name: Check
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: check-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  go:
+    name: ilttu-design
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ilttu-design
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7.0.0
+        with:
+          go-version-file: ilttu-design/go.mod
+          cache: false
+
+      - name: Vet and test
+        run: |
+          go vet ./...
+          go test ./...
+
+  plugins:
+    name: Plugin manifests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      # Validating needs no sign-in. The version is pinned, so a new Claude Code can't change what passes.
+      - name: Validate the marketplace and the plugin
+        run: |
+          npx --yes @anthropic-ai/claude-code@2.1.311 plugin validate .
+          npx --yes @anthropic-ai/claude-code@2.1.311 plugin validate plugins/ilttu

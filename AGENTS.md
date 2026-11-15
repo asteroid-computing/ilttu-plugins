@@ -12,14 +12,19 @@ ILTTU itself, its issues and its decisions are in `asteroid-computing/ilttu`, wh
 - `plugins/ilttu/skills/design/` - `/ilttu:design`: designing a page, previewing it as an ILTTU answer and revising it at the same link, with `SKILL.md` and its `references/`.
 - `plugins/ilttu/bin/ilttu-design` - the wrapper that downloads `ilttu-design`'s pinned release, checks its SHA-256 and runs it.
 - `ilttu-design/` - `ilttu-design`, a Go module on the standard library alone: `serve` previews a design's folder as ILTTU's answers' host serves it, and `init` copies in the design system vendored in `designsystem/`.
-- `.github/workflows/ilttu-design-release.yml` - builds and publishes a release of `ilttu-design` when a tag `ilttu-design-v<version>` is pushed.
+- `release-please-config.json` and `.release-please-manifest.json` - the two packages release-please releases, `plugins/ilttu` tagged `ilttu-v<version>` and `ilttu-design` tagged `ilttu-design-v<version>`, and their last versions.
+- `.github/workflows/release.yaml` - on main, keeps release-please's release PR open, and when `ilttu-design` releases, builds and publishes its binaries and opens a PR that pins them.
+- `.github/workflows/check.yaml` and `pr-title.yaml` - the checks below and the PR title's, on every PR.
+- `scripts/pin-ilttu-design` - pins a release's tag and SHA-256s in `plugins/ilttu/bin/ilttu-design`.
 
 ## Rules
 
 - **Validate after every change:** `claude plugin validate .` and `claude plugin validate plugins/ilttu`, and in `ilttu-design/`, `go vet ./...` and `go test ./...`.
-- **A change to `ilttu-design/` reaches people only through a release:** push a tag `ilttu-design-v<version>`, then pin that tag and each binary's SHA-256 from the release's `SHA256SUMS` in `plugins/ilttu/bin/ilttu-design`, and bump the plugin's version.
+- **Releases come from release-please, never by hand:** merging its release PR tags each package it releases, so never push a tag or edit a version, a `CHANGELOG.md` or the manifest yourself.
+- **A change to `ilttu-design/` reaches people in three merges:** its own PR, the release PR that releases `ilttu-design`, then the pin PR the Release workflow opens, which the next release PR ships in the plugin.
 - **`serve` sends what ILTTU's answers' host sends**, checked against `internal/edge` and `internal/cdk/answers` in `asteroid-computing/ilttu`, and its file types are a copy of ILTTU's `internal/filetypes`, so a change there is a change here too.
-- **Change a plugin's `version` in `plugin.json` with every change to it**, because people stay on their copy until the version changes.
+- **A plugin's change reaches people when its release PR merges**, which changes its `version` in `plugin.json`, because people stay on their copy until the version changes.
+  So a change under `plugins/ilttu/` needs a `feat` or `fix` title to be released at all.
 - **The connection's values are exact.**
   The URL is `https://mcp.ilttu.com/`, slash included, as Connect on ILTTU's workspace page gives it and as ILTTU's user pool identifies the resource agents sign in for.
   The `oauth` block must stay, because ILTTU's authorization server offers no dynamic client registration, so without a client ID Claude Code can't sign in.

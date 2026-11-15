@@ -1,0 +1,44 @@
+#!/usr/bin/env bash
+# Pins plugins/ilttu/bin/ilttu-design to a release of ilttu-design: its tag, and each platform's SHA-256 from the release's SHA256SUMS.
+# Usage: scripts/pin-ilttu-design <tag> <SHA256SUMS>
+# The Release workflow runs it after it publishes a release; run it by hand only to pin an older release again.
+set -euo pipefail
+
+if [ "$#" -ne 2 ]; then
+  echo "usage: $0 <tag> <SHA256SUMS>" >&2
+  exit 2
+fi
+tag="$1"
+sums="$2"
+wrapper="$(cd "$(dirname "$0")/.." && pwd)/plugins/ilttu/bin/ilttu-design"
+platforms="darwin-arm64 darwin-amd64 linux-arm64 linux-amd64"
+
+if ! [[ "$tag" =~ ^ilttu-design-v[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+  echo "not a tag of ilttu-design: ${tag}" >&2
+  exit 1
+fi
+
+# sum prints the SHA-256 that SHA256SUMS gives for the platform $1.
+sum() { awk -v f="ilttu-design-$1" '$2 == f { print $1 }' "$sums"; }
+
+# Every sum is checked before anything is written, so a short SHA256SUMS changes nothing.
+for platform in $platforms; do
+  if ! [[ "$(sum "$platform")" =~ ^[0-9a-f]{64}$ ]]; then
+    echo "no SHA-256 for ilttu-design-${platform} in ${sums}" >&2
+    exit 1
+  fi
+done
+
+pinned="$(mktemp)"
+trap 'rm -f "$pinned" "${pinned}.bak"' EXIT
+sed -E "s/^TAG=\"[^\"]*\"$/TAG=\"${tag}\"/" "$wrapper" > "$pinned"
+for platform in $platforms; do
+  sed -i.bak -E "s/^(    ${platform}\) echo \")[0-9a-f]{64}(\" ;;)$/\1$(sum "$platform")\2/" "$pinned"
+done
+
+# Each line is checked, so a wrapper whose lines have changed shape fails here, not when someone runs it.
+grep -qx "TAG=\"${tag}\"" "$pinned" || { echo "the wrapper has no TAG line to pin" >&2; exit 1; }
+for platform in $platforms; do
+  grep -qx "    ${platform}) echo \"$(sum "$platform")\" ;;" "$pinned" || { echo "the wrapper has no line for ${platform} to pin" >&2; exit 1; }
+done
+cat "$pinned" > "$wrapper"
