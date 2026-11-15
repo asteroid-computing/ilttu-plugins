@@ -4,16 +4,16 @@
 # The release is built by .github/workflows/release.yaml from the Go module in ilttu-design/, and scripts/pin-ilttu-design pins it here.
 set -euo pipefail
 
-TAG="ilttu-design-v0.1.0"
+TAG="ilttu-design-v0.1.1"
 REPO="asteroid-computing/ilttu-plugins"
 
 # pinned prints the SHA-256 of the release's binary for the platform $1.
 pinned() {
   case "$1" in
-    darwin-arm64) echo "71d3f2fd6a404dc9d5af7f83dd559ac0d27df45984839a3aec4dce103a2376ea" ;;
-    darwin-amd64) echo "4baf726080120b260dcfa987191ca577e4464e552ff9e4f7f0b64576315563bf" ;;
-    linux-arm64) echo "cda9019010ebc27598d2c798fb1d8be12f6226cd4a7d4306d0eb35228b75885e" ;;
-    linux-amd64) echo "4b369c65e8473cd845bcab749be9e182188911fb9289cefa1a86904ba18cec7d" ;;
+    darwin-arm64) echo "e51bc8c80ac7f498772edd1f654eedbc151fd7d0fb5248be616a67efe33ec8b9" ;;
+    darwin-amd64) echo "008ec1dd97aaea3853284d11720ebd5617713cebc0dd1d219dba44c96a5e7079" ;;
+    linux-arm64) echo "314715d79fd824f3e977ceeb1e29d1656527c8a3dfd23616f62f1dfb711b2b25" ;;
+    linux-amd64) echo "4bd856bbc2ac5083c98445f93bdbd6faeeaad2c097fe14df106144542670ff02" ;;
     *) return 1 ;;
   esac
 }
