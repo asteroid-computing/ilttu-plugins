@@ -1,0 +1,143 @@
+# Release: release-please keeps one release PR open against main, built from the Conventional Commit titles of the squash merges since each package's last release.
+# The packages are the ilttu plugin (plugins/ilttu, tagged ilttu-v<version>) and ilttu-design (ilttu-design/, tagged ilttu-design-v<version>); release-please-config.json names them.
+# Merging the release PR bumps the plugin's version in plugin.json, writes each package's CHANGELOG.md, tags each package it releases and creates its GitHub Release.
+#
+# ilttu-design's release is created as a draft, with its tag made at once ("draft" and "force-tag-creation" in release-please-config.json).
+# The ilttu-design job builds it from the tag, attaches the binaries and SHA256SUMS, and publishes it, so the release is never public without its assets.
+# A failed build leaves an unpublished draft: rerun the failed job, which keeps release-please's outputs; a new run would not, since release-please creates each release only once.
+# The pin job then opens a PR that pins the new release in plugins/ilttu/bin/ilttu-design, with scripts/pin-ilttu-design; merging it makes the next plugin release run it.
+#
+# release-please and the pin job act as the organisation's release GitHub App, with a token minted from the RELEASE_PLEASE_CLIENT_ID and RELEASE_PLEASE_PRIVATE_KEY org secrets, because a PR or tag made with GITHUB_TOKEN triggers no further workflows, and the release and pin PRs need their checks to run.
+name: Release
+
+on:
+  push:
+    branches: [main]
+  # Reruns release-please after a transient failure without needing a new commit.
+  workflow_dispatch:
+
+permissions: {}
+
+# Never cancel a run partway: it could stop between tagging and creating a release, or between attaching the assets and publishing.
+concurrency:
+  group: release
+  cancel-in-progress: false
+
+jobs:
+  release-please:
+    name: release-please
+    runs-on: ubuntu-latest
+    outputs:
+      design_released: ${{ steps.release.outputs['ilttu-design--release_created'] }}
+      design_tag: ${{ steps.release.outputs['ilttu-design--tag_name'] }}
+    steps:
+      # Without owner or repositories inputs the token is scoped to this repository; the permission inputs narrow it to what release-please uses.
+      - uses: actions/create-github-app-token@bcd2ba49218906704ab6c1aa796996da409d3eb1 # v3.2.0
+        id: app-token
+        with:
+          client-id: ${{ secrets.RELEASE_PLEASE_CLIENT_ID }}
+          private-key: ${{ secrets.RELEASE_PLEASE_PRIVATE_KEY }}
+          permission-contents: write
+          permission-pull-requests: write
+          permission-issues: write
+
+      - uses: googleapis/release-please-action@45996ed1f6d02564a971a2fa1b5860e934307cf7 # v5.0.0
+        id: release
+        with:
+          token: ${{ steps.app-token.outputs.token }}
+          config-file: release-please-config.json
+          manifest-file: .release-please-manifest.json
+
+  ilttu-design:
+    name: Build and publish ilttu-design
+    needs: release-please
+    if: needs.release-please.outputs.design_released == 'true'
+    runs-on: ubuntu-latest
+    permissions:
+      # Attaching the assets to the draft and publishing it.
+      contents: write
+    env:
+      TAG: ${{ needs.release-please.outputs.design_tag }}
+    defaults:
+      run:
+        working-directory: ilttu-design
+    steps:
+      # The tag, not main's tip: main may have moved on.
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: refs/tags/${{ needs.release-please.outputs.design_tag }}
+          persist-credentials: false
+
+      - uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7.0.0
+        with:
+          go-version-file: ilttu-design/go.mod
+          cache: false
+
+      - name: Vet and test
+        run: |
+          go vet ./...
+          go test ./...
+
+      # -trimpath and no cgo, so a build of the tag on any machine with the same Go makes the same bytes.
+      - name: Build
+        run: |
+          mkdir dist
+          for target in darwin/arm64 darwin/amd64 linux/arm64 linux/amd64; do
+            CGO_ENABLED=0 GOOS="${target%/*}" GOARCH="${target#*/}" go build -trimpath -ldflags "-s -w -X main.version=${TAG}" -o "dist/ilttu-design-${target%/*}-${target#*/}" .
+          done
+          (cd dist && sha256sum ilttu-design-* > SHA256SUMS && cat SHA256SUMS)
+
+      # --clobber makes a rerun replace what an earlier attempt attached. Publishing comes last.
+      - name: Attach the assets and publish
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release upload "$TAG" dist/* --repo "$GITHUB_REPOSITORY" --clobber
+          gh release edit "$TAG" --repo "$GITHUB_REPOSITORY" --draft=false
+
+  pin:
+    name: Pin ilttu-design in the plugin
+    needs: [release-please, ilttu-design]
+    runs-on: ubuntu-latest
+    env:
+      TAG: ${{ needs.release-please.outputs.design_tag }}
+    steps:
+      - uses: actions/create-github-app-token@bcd2ba49218906704ab6c1aa796996da409d3eb1 # v3.2.0
+        id: app-token
+        with:
+          client-id: ${{ secrets.RELEASE_PLEASE_CLIENT_ID }}
+          private-key: ${{ secrets.RELEASE_PLEASE_PRIVATE_KEY }}
+          permission-contents: write
+          permission-pull-requests: write
+
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: main
+          token: ${{ steps.app-token.outputs.token }}
+
+      # The sums come from the published release, the same file a person can check them against.
+      - name: Pin the release
+        env:
+          GH_TOKEN: ${{ steps.app-token.outputs.token }}
+        run: |
+          gh release download "$TAG" --repo "$GITHUB_REPOSITORY" --pattern SHA256SUMS --dir "$RUNNER_TEMP"
+          scripts/pin-ilttu-design "$TAG" "$RUNNER_TEMP/SHA256SUMS"
+          git diff
+
+      # A rerun force-pushes the same branch and reuses its PR.
+      - name: Open the PR
+        env:
+          GH_TOKEN: ${{ steps.app-token.outputs.token }}
+          SLUG: ${{ steps.app-token.outputs.app-slug }}
+        run: |
+          branch="pin/${TAG}"
+          title="fix(ilttu): run ilttu-design ${TAG#ilttu-design-}"
+          id="$(gh api "/users/${SLUG}[bot]" --jq .id)"
+          git config user.name "${SLUG}[bot]"
+          git config user.email "${id}+${SLUG}[bot]@users.noreply.github.com"
+          git switch -c "$branch"
+          git commit -am "$title"
+          git push --force origin "$branch"
+          if [ -z "$(gh pr list --repo "$GITHUB_REPOSITORY" --head "$branch" --json number --jq '.[].number')" ]; then
+            gh pr create --repo "$GITHUB_REPOSITORY" --base main --head "$branch" --title "$title" --body "Pins \`plugins/ilttu/bin/ilttu-design\` to ${TAG} and the SHA-256s in its published \`SHA256SUMS\`: https://github.com/${GITHUB_REPOSITORY}/releases/tag/${TAG}."
+          fi
