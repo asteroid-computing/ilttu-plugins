@@ -12,3 +12,9 @@ The client ID in `plugins/ilttu/.mcp.json` belongs to a public OAuth client, whi
 The tokens from signing in are Claude Code's to store and refresh, and they never reach this repository.
 
 Do not commit tokens, workspace keys, local tool settings or generated authentication files to this repository.
+
+## Downloads
+
+`plugins/ilttu/bin/ilttu-design` downloads one release of `ilttu-design` from this repository's GitHub Releases, over HTTPS, the first time it runs, into the plugin's data folder or the user's cache.
+It runs the binary only while its SHA-256 is the one pinned in the wrapper for that platform, and refuses it otherwise.
+A release is built by `.github/workflows/ilttu-design-release.yml` from the tagged commit.

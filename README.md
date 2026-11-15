@@ -37,6 +37,8 @@ To get a newer version, run `claude plugin marketplace update ilttu-plugins` and
 - It connects Claude Code to ILTTU's MCP server, `https://mcp.ilttu.com/`, signing you in through ILTTU's own page.
 - The `ilttu` skill says what ILTTU is, how to check the connection, and what to do when signing in fails.
 - The `design` skill, `/ilttu:design`, designs a page or a set of options, shares it as a private answer to preview, and revises it at the same link.
+- `ilttu-design`, a command the plugin puts on the Bash tool's PATH, previews a design's folder on localhost as ILTTU will serve it, and copies ILTTU's design system into it.
+  The first time it runs, it downloads its release from this repository's GitHub Releases, and runs it only if its SHA-256 is the one pinned in `plugins/ilttu/bin/ilttu-design`.
 
 This plugin is for `ilttu.com`.
 For another instance of ILTTU, use the command in Connect on a workspace's page.

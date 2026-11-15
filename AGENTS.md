@@ -10,10 +10,15 @@ ILTTU itself, its issues and its decisions are in `asteroid-computing/ilttu`, wh
 - `plugins/ilttu/.mcp.json` - the connection to ILTTU's MCP server.
 - `plugins/ilttu/skills/ilttu/SKILL.md` - what ILTTU is, how to check the connection, and what to do when signing in fails.
 - `plugins/ilttu/skills/design/` - `/ilttu:design`: designing a page, previewing it as an ILTTU answer and revising it at the same link, with `SKILL.md` and its `references/`.
+- `plugins/ilttu/bin/ilttu-design` - the wrapper that downloads `ilttu-design`'s pinned release, checks its SHA-256 and runs it.
+- `ilttu-design/` - `ilttu-design`, a Go module on the standard library alone: `serve` previews a design's folder as ILTTU's answers' host serves it, and `init` copies in the design system vendored in `designsystem/`.
+- `.github/workflows/ilttu-design-release.yml` - builds and publishes a release of `ilttu-design` when a tag `ilttu-design-v<version>` is pushed.
 
 ## Rules
 
-- **Validate after every change:** `claude plugin validate .` and `claude plugin validate plugins/ilttu`.
+- **Validate after every change:** `claude plugin validate .` and `claude plugin validate plugins/ilttu`, and in `ilttu-design/`, `go vet ./...` and `go test ./...`.
+- **A change to `ilttu-design/` reaches people only through a release:** push a tag `ilttu-design-v<version>`, then pin that tag and each binary's SHA-256 from the release's `SHA256SUMS` in `plugins/ilttu/bin/ilttu-design`, and bump the plugin's version.
+- **`serve` sends what ILTTU's answers' host sends**, checked against `internal/edge` and `internal/cdk/answers` in `asteroid-computing/ilttu`, and its file types are a copy of ILTTU's `internal/filetypes`, so a change there is a change here too.
 - **Change a plugin's `version` in `plugin.json` with every change to it**, because people stay on their copy until the version changes.
 - **The connection's values are exact.**
   The URL is `https://mcp.ilttu.com/`, slash included, as Connect on ILTTU's workspace page gives it and as ILTTU's user pool identifies the resource agents sign in for.

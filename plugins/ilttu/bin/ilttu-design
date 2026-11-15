@@ -1,0 +1,76 @@
+#!/usr/bin/env bash
+# Runs ilttu-design, which previews a design's folder on localhost as ILTTU will serve it, and copies the ilttu design system's assets into it.
+# On first use it downloads the release pinned below from GitHub, and runs it only while its SHA-256 is the one pinned here, for this platform.
+# The release is built by .github/workflows/ilttu-design-release.yml from the Go module in ilttu-design/.
+set -euo pipefail
+
+TAG="ilttu-design-v0.1.0"
+REPO="asteroid-computing/ilttu-plugins"
+
+# pinned prints the SHA-256 of the release's binary for the platform $1.
+pinned() {
+  case "$1" in
+    darwin-arm64) echo "71d3f2fd6a404dc9d5af7f83dd559ac0d27df45984839a3aec4dce103a2376ea" ;;
+    darwin-amd64) echo "4baf726080120b260dcfa987191ca577e4464e552ff9e4f7f0b64576315563bf" ;;
+    linux-arm64) echo "cda9019010ebc27598d2c798fb1d8be12f6226cd4a7d4306d0eb35228b75885e" ;;
+    linux-amd64) echo "4b369c65e8473cd845bcab749be9e182188911fb9289cefa1a86904ba18cec7d" ;;
+    *) return 1 ;;
+  esac
+}
+
+log() { printf 'ilttu-design: %s\n' "$*" >&2; }
+
+sha256() {
+  if command -v sha256sum >/dev/null 2>&1; then
+    sha256sum "$1" | awk '{print $1}'
+  else
+    shasum -a 256 "$1" | awk '{print $1}'
+  fi
+}
+
+os="$(uname -s | tr '[:upper:]' '[:lower:]')"
+case "$(uname -m)" in
+  x86_64 | amd64) arch="amd64" ;;
+  arm64 | aarch64) arch="arm64" ;;
+  *) arch="$(uname -m)" ;;
+esac
+platform="${os}-${arch}"
+want="$(pinned "$platform" || true)"
+if [ -z "$want" ]; then
+  log "there is no pinned release of ${TAG} for ${platform}"
+  exit 1
+fi
+
+if [ -n "${CLAUDE_PLUGIN_DATA:-}" ]; then
+  data="${CLAUDE_PLUGIN_DATA}"
+elif [ -n "${XDG_CACHE_HOME:-}" ]; then
+  data="${XDG_CACHE_HOME}/ilttu-plugins"
+elif [ "$os" = "darwin" ]; then
+  data="${HOME}/Library/Caches/com.asteroidcomputing.ilttu-plugins"
+else
+  data="${HOME}/.cache/ilttu-plugins"
+fi
+bin="${data}/ilttu-design/${TAG}/ilttu-design"
+
+if [ -x "$bin" ] && [ "$(sha256 "$bin")" = "$want" ]; then
+  exec "$bin" "$@"
+fi
+
+mkdir -p "$(dirname "$bin")"
+tmp="$(mktemp "$(dirname "$bin")/.download.XXXXXX")"
+trap 'rm -f "$tmp"' EXIT
+url="https://github.com/${REPO}/releases/download/${TAG}/ilttu-design-${platform}"
+log "downloading ${TAG} for ${platform} from ${url}"
+if ! curl -fsSL --proto '=https' --tlsv1.2 -o "$tmp" "$url"; then
+  log "could not download ${url}"
+  exit 1
+fi
+got="$(sha256 "$tmp")"
+if [ "$got" != "$want" ]; then
+  log "refused ${url}: its SHA-256 is ${got}, not the pinned ${want}"
+  exit 1
+fi
+chmod 0755 "$tmp"
+mv -f "$tmp" "$bin"
+trap - EXIT
+exec "$bin" "$@"
