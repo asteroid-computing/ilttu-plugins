@@ -79,20 +79,22 @@ jobs:
           go test ./...
 
       # -trimpath and no cgo, so a build of the tag on any machine with the same Go makes the same bytes.
+      # The binaries go outside the checkout: a file left inside it makes Go stamp every later build vcs.modified=true, as it did for v0.1.0 and v0.1.1.
       - name: Build
         run: |
-          mkdir dist
+          mkdir "$RUNNER_TEMP/dist"
           for target in darwin/arm64 darwin/amd64 linux/arm64 linux/amd64; do
-            CGO_ENABLED=0 GOOS="${target%/*}" GOARCH="${target#*/}" go build -trimpath -ldflags "-s -w -X main.version=${TAG}" -o "dist/ilttu-design-${target%/*}-${target#*/}" .
+            CGO_ENABLED=0 GOOS="${target%/*}" GOARCH="${target#*/}" go build -trimpath -ldflags "-s -w -X main.version=${TAG}" -o "$RUNNER_TEMP/dist/ilttu-design-${target%/*}-${target#*/}" .
           done
-          (cd dist && sha256sum ilttu-design-* > SHA256SUMS && cat SHA256SUMS)
+          (cd "$RUNNER_TEMP/dist" && sha256sum ilttu-design-* > SHA256SUMS && cat SHA256SUMS)
+          git status --porcelain --untracked-files=all | grep . && { echo "::error::the build left files in the checkout"; exit 1; } || true
 
       # --clobber makes a rerun replace what an earlier attempt attached. Publishing comes last.
       - name: Attach the assets and publish
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          gh release upload "$TAG" dist/* --repo "$GITHUB_REPOSITORY" --clobber
+          gh release upload "$TAG" "$RUNNER_TEMP"/dist/* --repo "$GITHUB_REPOSITORY" --clobber
           gh release edit "$TAG" --repo "$GITHUB_REPOSITORY" --draft=false
 
   pin:

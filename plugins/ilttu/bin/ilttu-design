@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # Runs ilttu-design, which previews a design's folder on localhost as ILTTU will serve it, and copies the ilttu design system's assets into it.
 # On first use it downloads the release pinned below from GitHub, and runs it only while its SHA-256 is the one pinned here, for this platform.
-# The release is built by .github/workflows/ilttu-design-release.yml from the Go module in ilttu-design/.
+# The release is built by .github/workflows/release.yaml from the Go module in ilttu-design/, and scripts/pin-ilttu-design pins it here.
 set -euo pipefail
 
 TAG="ilttu-design-v0.1.0"
